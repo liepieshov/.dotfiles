@@ -1,0 +1,9 @@
+#!/bin/bash
+
+STOW_FOLDERS="$(ls -d */)"
+
+for folder in $STOW_FOLDERS
+do
+    echo "stow $folder"
+    stow -R "$folder"
+done
