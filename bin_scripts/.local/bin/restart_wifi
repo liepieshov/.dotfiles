@@ -1,4 +1,3 @@
 #!/bin/bash
 
-sudo systemctl restart network-manager
-
+sudo systemctl restart NetworkManager.service
