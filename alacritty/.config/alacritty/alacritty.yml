@@ -1,0 +1,10 @@
+font:
+  size: 11.0
+  normal:
+    family: Comic Mono Nerd Font 
+    style: Normal
+  bold:
+    family: Comic Mono Nerd Font
+    style: Bold
+env:
+  TERM: xterm-256color
