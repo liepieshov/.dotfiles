@@ -1,3 +1,11 @@
+-- - ERROR shfmt: the command "shfmt" is not executable.
+-- - ERROR prettier: the command "prettier" is not executable.
+-- - ERROR shellcheck: the command "shellcheck" is not executable.
+-- - ERROR black: the command "black" is not executable.
+-- - ERROR isort: the command "isort" is not executable.
+-- - ERROR stylua: the command "stylua" is not executable.
+-- install RG; FG; NVM; fzf
+
 local cmp = require("cmp")
 local lspkind = require("lspkind")
 local luasnip = require("luasnip")
@@ -61,6 +69,7 @@ local servers = {
             telemetry = { enable = false },
         },
     },
+    bufls = {},
 }
 
 -- Setup neovim lua configuration

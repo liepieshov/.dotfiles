@@ -29,8 +29,8 @@ vim.opt.scrolloff = 8
 vim.opt.updatetime = 250
 vim.opt.colorcolumn = "80"
 vim.wo.number = true
-vim.wo.signcolumn = 'yes'
-vim.opt.culopt = 'number'
+vim.wo.signcolumn = "yes"
+vim.opt.culopt = "both"
 vim.cmd([[autocmd ColorScheme * highlight CursorLineNr cterm=bold guifg=#D19A66 guifg=#D19A66 term=bold gui=bold]])
 vim.opt.cursorline = true
 vim.opt.termguicolors = true
@@ -42,15 +42,17 @@ vim.g.snips_github = "liepieshov"
 -- vim.o.timeout = true
 -- vim.o.timeoutlen = 300
 
-vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
+vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
 
 -- See `:help vim.highlight.on_yank()`
-local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
-vim.api.nvim_create_autocmd('TextYankPost', {
+local highlight_group = vim.api.nvim_create_augroup("YankHighlight", { clear = true })
+vim.api.nvim_create_autocmd("TextYankPost", {
     callback = function()
         vim.highlight.on_yank()
     end,
     group = highlight_group,
-    pattern = '*',
+    pattern = "*",
 })
-vim.o.completeopt = 'menuone,noselect'
+vim.o.completeopt = "menuone,noselect"
+vim.g.python3_host_prog = "/Users/liepieshov/.pyenv/versions/3.8.13/envs/nvim_venv/bin/python"
+
