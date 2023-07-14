@@ -60,7 +60,16 @@ local servers = {
     texlab = { texlab = { build = { onSave = true } } },
     -- clangd = {},
     -- gopls = {},
-    pyright = {},
+    pyright = {
+        stubPath = vim.fn.stdpath("data") .. "/lazy/python-type-stubs",
+        python = {
+            analysis = {
+                autoSearchPaths = true,
+                useLibraryCodeForTypes = true,
+                diagnosticMode = "openFilesOnly",
+            },
+        },
+    },
     -- rust_analyzer = {},
     tsserver = {},
     lua_ls = {

@@ -49,7 +49,7 @@ require("lazy").setup({
 
             -- Useful status updates for LSP
             -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-            { "j-hui/fidget.nvim",       opts = {} },
+            { "j-hui/fidget.nvim",       opts = {}, tag="legacy" },
 
             -- Additional lua configuration, makes nvim stuff amazing!
             "folke/neodev.nvim",
@@ -113,7 +113,9 @@ require("lazy").setup({
             return vim.fn.executable("make") == 1
         end,
     },
-
+    {
+        "nvim-telescope/telescope-fzf-writer.nvim",
+    },
     {
         -- Highlight, edit, and navigate code
         "nvim-treesitter/nvim-treesitter",
@@ -213,5 +215,13 @@ require("lazy").setup({
         dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim", "nvim-tree/nvim-web-devicons" },
     },
     "epwalsh/obsidian.nvim",
+    {
+        'nvim-treesitter/nvim-treesitter-context', opts = {},
+    },
+
+    {
+        "microsoft/python-type-stubs",
+        cond = false,
+    },
     -- awesome by liepieshov: New updated version 21.04.2023
 }, {})

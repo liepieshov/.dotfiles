@@ -3,3 +3,5 @@
 	name = ko-lie
 [init]
 	defaultBranch = main
+[pull]
+	ff = only
