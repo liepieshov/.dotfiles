@@ -1,5 +1,10 @@
-[user]
-	email = liepieshov@gmail.com
-	name = liepieshov
-[init]
-	defaultBranch = main
+# ~/.gitconfig
+ 
+[includeIf "gitdir:~/personal/"] # include for all .git projects under personnal/ 
+path = ~/personal/.gitconfig-pers
+ 
+[includeIf "gitdir:~/projects/"]
+path = ~/projects/.gitconfig-work
+ 
+[core]
+excludesfile = ~/.gitignore
