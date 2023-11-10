@@ -1,14 +1,11 @@
--- - ERROR shfmt: the command "shfmt" is not executable.
--- - ERROR prettier: the command "prettier" is not executable.
--- - ERROR shellcheck: the command "shellcheck" is not executable.
--- - ERROR black: the command "black" is not executable.
--- - ERROR isort: the command "isort" is not executable.
--- - ERROR stylua: the command "stylua" is not executable.
 -- install RG; FG; NVM; fzf
 
 local cmp = require("cmp")
 local lspkind = require("lspkind")
 local luasnip = require("luasnip")
+vim.keymap.set("n", "<leader>f", function()
+    vim.lsp.buf.format({ async = true, timeout_ms = 80000 })
+end, { desc = "Format current buffer" })
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(_, bufnr)
@@ -19,11 +16,13 @@ local on_attach = function(_, bufnr)
 
         vim.keymap.set("n", keys, func, { buffer = bufnr, desc = desc, noremap = true })
     end
+    vim.bo[bufnr].omnifunc = "v:lua.vim.lsp.omnifunc"
 
     -- Mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     nmap("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
     nmap("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
+    vim.keymap.set("v", "<leader>ca", vim.lsp.buf.code_action, { buffer = bufnr, desc = "code-action" })
 
     nmap("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
     nmap("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
@@ -46,11 +45,11 @@ local on_attach = function(_, bufnr)
 
     -- Create a command `:Format` local to the LSP buffer
     vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_)
-        vim.lsp.buf.format()
+        vim.lsp.buf.format({ timeout_ms = 80000, async = true })
     end, { desc = "Format current buffer with LSP" })
 
-    vim.keymap.set("n", "<space>f", function()
-        vim.lsp.buf.format({ async = true })
+    vim.keymap.set("n", "<leader>f", function()
+        vim.lsp.buf.format({ async = true, timeout_ms = 80000 })
     end, { desc = "Format current buffer" })
 end
 
@@ -58,19 +57,20 @@ local servers = {
     -- sudo apt -y install latexmk
     -- sudo apt-get -y install texlive-latex-recommended texlive-pictures texlive-latex-extra
     texlab = { texlab = { build = { onSave = true } } },
-    -- clangd = {},
-    -- gopls = {},
     pyright = {
-        stubPath = vim.fn.stdpath("data") .. "/lazy/python-type-stubs",
+        pyright = {
+            disableOrganizeImports = true,
+        },
         python = {
             analysis = {
                 autoSearchPaths = true,
                 useLibraryCodeForTypes = true,
                 diagnosticMode = "openFilesOnly",
+                -- diagnosticMode = "off",
+                -- typeCheckingMode = "off",
             },
         },
     },
-    -- rust_analyzer = {},
     tsserver = {},
     lua_ls = {
         Lua = {
@@ -79,6 +79,8 @@ local servers = {
         },
     },
     bufls = {},
+    -- hydrolsp = {},
+    -- sqlls = {},
 }
 
 -- Setup neovim lua configuration
@@ -97,11 +99,35 @@ mason_lspconfig.setup({
 
 mason_lspconfig.setup_handlers({
     function(server_name)
-        require("lspconfig")[server_name].setup({
-            capabilities = capabilities,
-            on_attach = on_attach,
-            settings = servers[server_name],
-        })
+        if server_name == "pyright" then
+            require("lspconfig")[server_name].setup({
+                capabilities = capabilities,
+                on_attach = on_attach,
+                settings = servers[server_name],
+                root_dir = function(fname)
+                    return require("lspconfig.util").root_pattern(unpack({
+                        "pyproject.toml",
+                        -- "requirements.txt",
+                        -- "Pipfile",
+                        -- "setup.py",
+                        -- "setup.cfg",
+                        -- "pyrightconfig.json",
+                        -- ".git",
+                    }))(fname)
+                end,
+
+                single_file_support = true,
+                flags = {
+                    debounce_text_changes = 200,
+                },
+            })
+        else
+            require("lspconfig")[server_name].setup({
+                capabilities = capabilities,
+                on_attach = on_attach,
+                settings = servers[server_name],
+            })
+        end
     end,
 })
 
@@ -120,7 +146,7 @@ cmp.setup({
         ["<C-y>"] = cmp.mapping.confirm({ select = true }),
         ["<C-b>"] = cmp.mapping.scroll_docs(-4),
         ["<C-f>"] = cmp.mapping.scroll_docs(4),
-        ["<C-Space>"] = cmp.mapping.complete(),
+        ["<C-space>"] = cmp.mapping.complete(),
         ["<C-e>"] = cmp.mapping.abort(),
         -- ["<CR>"] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
         ["<Tab>"] = cmp.mapping(function(fallback)

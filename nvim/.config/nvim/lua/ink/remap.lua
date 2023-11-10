@@ -25,7 +25,9 @@ vim.keymap.set(
 )
 
 -- format that file
-vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, { noremap = true, desc = "format buffer" })
+-- vim.keymap.set("n", "<leader>f", function()
+--     vim.lsp.buf.format({ timeout_ms = 8000 })
+-- end, { noremap = true, desc = "format buffer" })
 
 vim.keymap.set("i", "<C-c>", "<Esc>")
 vim.keymap.set("n", "Q", "<nop>")

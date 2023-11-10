@@ -49,7 +49,7 @@ require("lazy").setup({
 
             -- Useful status updates for LSP
             -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-            { "j-hui/fidget.nvim",       opts = {}, tag="legacy" },
+            { "j-hui/fidget.nvim",       opts = {},    tag = "legacy" },
 
             -- Additional lua configuration, makes nvim stuff amazing!
             "folke/neodev.nvim",
@@ -133,20 +133,38 @@ require("lazy").setup({
         "jose-elias-alvarez/null-ls.nvim",
         config = function()
             require("null-ls").setup({
+                debounce = 1000,
                 sources = {
                     require("null-ls").builtins.formatting.shfmt, -- shell script formatting
-                    require("null-ls").builtins.formatting.prettier, -- markdown formatting
+                    require("null-ls").builtins.formatting.taplo.with({
+                        extra_args = { "--option", 'indent_string=  ' },
+                    }),
+                    require("null-ls").builtins.formatting.prettier,
                     require("null-ls").builtins.diagnostics.shellcheck, -- shell script diagnostics
                     require("null-ls").builtins.formatting.black,
                     require("null-ls").builtins.formatting.isort,
                     require("null-ls").builtins.formatting.stylua,
                     require("null-ls").builtins.formatting.buf,
                     require("null-ls").builtins.diagnostics.buf,
+                    require("null-ls").builtins.formatting.sqlfluff.with({
+                        extra_args = { "--dialect", "postgres" }, -- change to your dialect
+                    }),
+                    -- require("null-ls").builtins.diagnostics.sqlfluff.with({
+                    --     extra_args = { "--dialect", "postgres" }, -- change to your dialect
+                    -- }),
+                    require("null-ls").builtins.diagnostics.flake8,
                     require("null-ls").builtins.diagnostics.mypy.with({
+                        debounce = 2000,
+                        timeout = 9000000000,
+                        command = 'dmypy',
                         args = function(params)
-                            local virtual = os.getenv("VIRTUAL_ENV") or "/usr"
+                             --dmypy run -- --ignore-missing-imports ./app
+ 
+                            -- local virtual = os.getenv("VIRTUAL_ENV") or "/usr"
                             return {
-                                "--python-executable=" .. virtual .. "/bin/python",
+                                "run",
+                                "--",
+                                -- "--python-executable=" .. virtual .. "/bin/python",
                                 "--hide-error-codes",
                                 "--hide-error-context",
                                 "--no-color-output",
@@ -155,11 +173,20 @@ require("lazy").setup({
                                 "--show-error-codes",
                                 "--no-error-summary",
                                 "--no-pretty",
-                                "--shadow-file",
-                                params.bufname,
-                                params.temp_path,
-                                params.bufname,
+                                "./",
+                                -- "--shadow-file",
+                                -- params.bufname,
+                                -- params.temp_path,
+                                -- params.bufname,
                             }
+                        end,
+                        -- Do not run in fugitive windows, or when inside of a .venv area
+                        runtime_condition = function(params)
+                            if string.find(params.bufname, "fugitive") or string.find(params.bufname, ".venv") then
+                                return false
+                            else
+                                return true
+                            end
                         end,
                     }),
                     -- require("null-ls").builtins.diagnostics.pydocstyle.with({
@@ -216,7 +243,8 @@ require("lazy").setup({
     },
     "epwalsh/obsidian.nvim",
     {
-        'nvim-treesitter/nvim-treesitter-context', opts = {},
+        "nvim-treesitter/nvim-treesitter-context",
+        opts = {},
     },
 
     {
