@@ -24,10 +24,10 @@ telescope.setup({
         --     minimum_grep_characters = 2,
         --     minimum_files_characters = 2,
 
-            -- Disabled by default.
-            -- Will probably slow down some aspects of the sorter, but can make color highlights.
-            -- I will work on this more later.
-            -- use_highlighter = true,
+        -- Disabled by default.
+        -- Will probably slow down some aspects of the sorter, but can make color highlights.
+        -- I will work on this more later.
+        -- use_highlighter = true,
         -- },
         -- file_browser = {
         --     theme = "ivy",
@@ -70,14 +70,36 @@ vim.keymap.set("n", "<leader>/", function()
     -- })
 end, { desc = "[/] Fuzzily search in current buffer" })
 
+function vim.getVisualSelection()
+    vim.cmd('noau normal! "vy"')
+    local text = vim.fn.getreg("v")
+    vim.fn.setreg("v", {})
+
+    text = string.gsub(text, "\n", "")
+    if #text > 0 then
+        return text
+    else
+        return ""
+    end
+end
+
+local tb = require("telescope.builtin")
+local opts = { noremap = true, silent = true }
 vim.keymap.set("n", "<leader>gf", builtin.git_files, { desc = "[G]it [F]iles" })
 vim.keymap.set("n", "<leader>sf", require("telescope.builtin").find_files, { desc = "[S]earch [F]iles" })
 vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "[S]earch [H]elp" })
-vim.keymap.set("n", "<leader>sw", function()
-    builtin.grep_string({ search = vim.fn.input("Grep > ") })
-end, { desc = "[S]earch current [W]ord" })
+vim.keymap.set("n", "<leader>sw", builtin.grep_string, { desc = "[S]earch current [W]ord" })
 vim.keymap.set("n", "<leader>sg", require("telescope.builtin").live_grep, { desc = "[S]earch by [G]rep" })
+-- vim.keymap.set("n", "<leader>sg", require("telescope.builtin").live_grep, { desc = "[S]earch by [G]rep" })
 vim.keymap.set("n", "<leader>sd", builtin.diagnostics, { desc = "[S]earch [D]iagnostics" })
+vim.keymap.set("v", "<leader>/", function()
+    local text = vim.getVisualSelection()
+    tb.current_buffer_fuzzy_find({ default_text = text })
+end, opts)
+vim.keymap.set("v", "<leader>sg", function()
+    local text = vim.getVisualSelection()
+    tb.live_grep({ default_text = text })
+end, opts)
 
 -- To get telescope-file-browser loaded and working with telescope,
 -- you need to call load_extension, somewhere after setup function:

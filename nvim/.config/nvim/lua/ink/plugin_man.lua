@@ -62,6 +62,7 @@ require("lazy").setup({
         dependencies = {
             "hrsh7th/cmp-buffer",
             "hrsh7th/cmp-nvim-lsp",
+            "hrsh7th/cmp-path",
             "saadparwaiz1/cmp_luasnip",
             {
                 "L3MON4D3/LuaSnip",
@@ -132,17 +133,20 @@ require("lazy").setup({
     {
         "jose-elias-alvarez/null-ls.nvim",
         config = function()
+            local methods = require("null-ls.methods")
+
             require("null-ls").setup({
-                debounce = 1000,
+                -- debug = true,
+                -- debounce = 1000,
                 sources = {
                     require("null-ls").builtins.formatting.shfmt, -- shell script formatting
                     require("null-ls").builtins.formatting.taplo.with({
-                        extra_args = { "--option", 'indent_string=  ' },
+                        extra_args = { "--option", "indent_string=  " },
                     }),
                     require("null-ls").builtins.formatting.prettier,
                     require("null-ls").builtins.diagnostics.shellcheck, -- shell script diagnostics
-                    require("null-ls").builtins.formatting.black,
                     require("null-ls").builtins.formatting.isort,
+                    require("null-ls").builtins.formatting.black,
                     require("null-ls").builtins.formatting.stylua,
                     require("null-ls").builtins.formatting.buf,
                     require("null-ls").builtins.diagnostics.buf,
@@ -153,16 +157,21 @@ require("lazy").setup({
                     --     extra_args = { "--dialect", "postgres" }, -- change to your dialect
                     -- }),
                     require("null-ls").builtins.diagnostics.flake8,
+                    -- require("null-ls").builtins.formatting.rustfmt,
                     require("null-ls").builtins.diagnostics.mypy.with({
-                        debounce = 2000,
-                        timeout = 9000000000,
-                        command = 'dmypy',
+                        method = methods.internal.DIAGNOSTICS_ON_SAVE,
+                        timeout = 900000000,
+                        command = "dmypy",
                         args = function(params)
-                             --dmypy run -- --ignore-missing-imports ./app
- 
+                            --dmypy run -- --ignore-missing-imports ./app
+
                             -- local virtual = os.getenv("VIRTUAL_ENV") or "/usr"
                             return {
                                 "run",
+                                "--perf-stats-file",
+                                "/Users/liepieshov/dmypy-temp.perf_stats",
+                                "--log-file",
+                                "/Users/liepieshov/dmypy-temp.log",
                                 "--",
                                 -- "--python-executable=" .. virtual .. "/bin/python",
                                 "--hide-error-codes",
@@ -251,5 +260,6 @@ require("lazy").setup({
         "microsoft/python-type-stubs",
         cond = false,
     },
+    { "simrat39/rust-tools.nvim" },
     -- awesome by liepieshov: New updated version 21.04.2023
 }, {})
