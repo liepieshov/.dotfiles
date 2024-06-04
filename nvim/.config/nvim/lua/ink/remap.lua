@@ -25,7 +25,9 @@ vim.keymap.set(
 )
 
 -- format that file
-vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, { noremap = true, desc = "format buffer" })
+-- vim.keymap.set("n", "<leader>f", function()
+--     vim.lsp.buf.format({ timeout_ms = 8000 })
+-- end, { noremap = true, desc = "format buffer" })
 
 vim.keymap.set("i", "<C-c>", "<Esc>")
 vim.keymap.set("n", "Q", "<nop>")
@@ -35,3 +37,5 @@ vim.keymap.set(
     "<cmd>silent !tmux neww tmux-sessionizer<CR>",
     { noremap = true, silent = true, desc = "tmux-sessionizer open new project" }
 )
+vim.keymap.set("n", "<M-Left>", "<cmd>bp<CR>", { noremap = true, silent = true, desc = "remap left" })
+vim.keymap.set("n", "<M-Right>", "<cmd>bn<CR>", { noremap = true, silent = true, desc = "remap right" })

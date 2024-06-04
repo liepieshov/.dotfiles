@@ -4,6 +4,6 @@ STOW_FOLDERS="$(ls -d */)"
 
 for folder in $STOW_FOLDERS
 do
-    echo "stow $folder"
+    echo "stow $folder end"
     stow -R "$folder"
 done
