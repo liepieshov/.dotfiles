@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 STOW_FOLDERS="$(ls -d */)"
 
