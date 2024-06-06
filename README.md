@@ -5,3 +5,6 @@ pre-install:
 - cargo
 - golang
 - nvm -> node>=18
+- fzf
+- pyenv
+- poetry
