@@ -86,6 +86,7 @@ local servers = {
         },
     },
     bufls = {},
+    clangd = {},
     -- hydrolsp = {},
     -- sqlls = {},
 }
