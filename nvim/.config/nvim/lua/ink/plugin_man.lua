@@ -145,8 +145,8 @@ require("lazy").setup({
                     }),
                     require("null-ls").builtins.formatting.prettier,
                     require("null-ls").builtins.diagnostics.shellcheck, -- shell script diagnostics
-                    require("null-ls").builtins.formatting.isort,
-                    require("null-ls").builtins.formatting.black,
+                    -- require("null-ls").builtins.formatting.isort,
+                    -- require("null-ls").builtins.formatting.black,
                     require("null-ls").builtins.formatting.stylua,
                     require("null-ls").builtins.formatting.buf,
                     require("null-ls").builtins.diagnostics.buf,
@@ -156,41 +156,45 @@ require("lazy").setup({
                     -- require("null-ls").builtins.diagnostics.sqlfluff.with({
                     --     extra_args = { "--dialect", "postgres" }, -- change to your dialect
                     -- }),
-                    require("null-ls").builtins.diagnostics.flake8,
+                    -- require("null-ls").builtins.diagnostics.flake8,
                     -- require("null-ls").builtins.formatting.rustfmt,
+                    -- TODO: temp disable mypy - no need
                     require("null-ls").builtins.diagnostics.mypy.with({
                         method = methods.internal.DIAGNOSTICS_ON_SAVE,
-                        timeout = 900000000,
-                        command = "dmypy",
-                        args = function(params)
-                            --dmypy run -- --ignore-missing-imports ./app
-
-                            -- local virtual = os.getenv("VIRTUAL_ENV") or "/usr"
-                            return {
-                                "run",
-                                "--perf-stats-file",
-                                "/Users/liepieshov/dmypy-temp.perf_stats",
-                                "--log-file",
-                                "/Users/liepieshov/dmypy-temp.log",
-                                "--",
-                                -- "--python-executable=" .. virtual .. "/bin/python",
-                                "--hide-error-codes",
-                                "--hide-error-context",
-                                "--no-color-output",
-                                "--show-absolute-path",
-                                "--show-column-numbers",
-                                "--show-error-codes",
-                                "--no-error-summary",
-                                "--no-pretty",
-                                "./",
-                                -- "--shadow-file",
-                                -- params.bufname,
-                                -- params.temp_path,
-                                -- params.bufname,
-                            }
-                        end,
+                        -- timeout = 900000000,
+                        -- command = "dmypy",
+                        -- args = function(params)
+                        --     -- vim.print(params)
+                        --     --dmypy run -- --ignore-missing-imports ./app
+                        --
+                        --     -- local virtual = os.getenv("VIRTUAL_ENV") or "/usr"
+                        --     return {
+                        --         "run",
+                        --         -- "--perf-stats-file",
+                        --         -- "/Users/liepieshov/dmypy-temp.perf_stats",
+                        --         -- "--log-file",
+                        --         -- "/Users/liepieshov/dmypy-temp.log",
+                        --         "--",
+                        --         -- "--python-executable=" .. virtual .. "/bin/python",
+                        --         "--hide-error-codes",
+                        --         "--hide-error-context",
+                        --         "--no-color-output",
+                        --         "--show-absolute-path",
+                        --         "--show-column-numbers",
+                        --         "--show-error-codes",
+                        --         "--no-error-summary",
+                        --         "--no-pretty",
+                        --         params.cwd,
+                        --         -- "--shadow-file",
+                        --         -- params.bufname,
+                        --         -- params.temp_path,
+                        --         -- params.bufname,
+                        --     }
+                        -- end,
                         -- Do not run in fugitive windows, or when inside of a .venv area
                         runtime_condition = function(params)
+                            -- TEMP disable;
+                            return false
                             if string.find(params.bufname, "fugitive") or string.find(params.bufname, ".venv") then
                                 return false
                             else

@@ -8,7 +8,7 @@ vim.keymap.set("n", "<leader>f", function()
 end, { desc = "Format current buffer" })
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
-local on_attach = function(_, bufnr)
+local on_attach = function(client, bufnr)
     local nmap = function(keys, func, desc)
         if desc then
             desc = "LSP: " .. desc
@@ -17,6 +17,10 @@ local on_attach = function(_, bufnr)
         vim.keymap.set("n", keys, func, { buffer = bufnr, desc = desc, noremap = true })
     end
     vim.bo[bufnr].omnifunc = "v:lua.vim.lsp.omnifunc"
+    if client.name == 'ruff' then
+        -- Disable hover in favor of Pyright
+        client.server_capabilities.hoverProvider = false
+    end
 
     -- Mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
@@ -63,6 +67,10 @@ local servers = {
     --         },
     --     },
     -- },
+    ruff = {
+        cmd = { "ruff", "server", "--preview" },
+        cmd_env = { RUFF_TRACE = "messages" }
+    },
     texlab = { texlab = { build = { onSave = true } } },
     pyright = {
         pyright = {
@@ -70,11 +78,10 @@ local servers = {
         },
         python = {
             analysis = {
-                autoSearchPaths = true,
-                useLibraryCodeForTypes = true,
-                diagnosticMode = "openFilesOnly",
-                -- diagnosticMode = "off",
-                -- typeCheckingMode = "off",
+                ignore = { '*' },
+                -- autoSearchPaths = true,
+                -- useLibraryCodeForTypes = true,
+                -- diagnosticMode = "openFilesOnly",
             },
         },
     },
@@ -103,6 +110,7 @@ local mason_lspconfig = require("mason-lspconfig")
 
 mason_lspconfig.setup({
     ensure_installed = vim.tbl_keys(servers),
+    PATH = "append"
 })
 
 luasnip.config.setup({})
