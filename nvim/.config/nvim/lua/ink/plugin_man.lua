@@ -195,11 +195,11 @@ require("lazy").setup({
                         runtime_condition = function(params)
                             -- TEMP disable;
                             return false
-                            if string.find(params.bufname, "fugitive") or string.find(params.bufname, ".venv") then
-                                return false
-                            else
-                                return true
-                            end
+                            -- if string.find(params.bufname, "fugitive") or string.find(params.bufname, ".venv") then
+                                -- return false
+                            -- else
+                                -- return true
+                            -- end
                         end,
                     }),
                     -- require("null-ls").builtins.diagnostics.pydocstyle.with({
